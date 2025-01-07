@@ -3,8 +3,7 @@ import express from "express";
 import connectDB from "./db/db.js";
 
 // Importing Routes
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
+import passport from "./auth/auth.js";
 import menuItemRouter from "./routes/menuItem.routes.js";
 import personRouter from "./routes/person.routes.js";
 
@@ -28,25 +27,17 @@ const logRequest = (req, res, next) => {
 
 app.use(logRequest);
 
-app.use(new LocalStrategy(async (username, password, done) => {
+app.use(passport.initialize());
 
-  // Authentication logic
-  try {
-    
-  } catch (error) {
-    
-  }
-
-
-}))
+const localAuthMiddleware = passport.authenticate("local", { session: false });
 
 app.get("/", (req, res) => {
   res.send("Welcome to Hotel");
 });
 
 // ==> Import the router files
-app.use("/person", personRouter);
-app.use("/menu", menuItemRouter);
+app.use("/person", localAuthMiddleware, personRouter);
+app.use("/menu", localAuthMiddleware, menuItemRouter);
 
 app.listen(port, () => {
   console.log("Server is listening at port: ", port);
