@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./db/db.js";
 
@@ -6,6 +7,10 @@ import connectDB from "./db/db.js";
 import passport from "./auth/auth.js";
 import menuItemRouter from "./routes/menuItem.routes.js";
 import personRouter from "./routes/person.routes.js";
+
+dotenv.config({
+  path: "./.env",
+});
 
 const app = express();
 const port = 8003;
@@ -36,8 +41,8 @@ app.get("/", (req, res) => {
 });
 
 // ==> Import the router files
-app.use("/person", localAuthMiddleware, personRouter);
-app.use("/menu", localAuthMiddleware, menuItemRouter);
+app.use("/person", personRouter);
+app.use("/menu", menuItemRouter);
 
 app.listen(port, () => {
   console.log("Server is listening at port: ", port);
